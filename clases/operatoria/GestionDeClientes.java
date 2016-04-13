@@ -22,10 +22,4 @@ public interface GestionDeClientes {
 	
 	public void activarCliente (Cliente cliente);
 
-
-		
-	
-
-	
-
 }

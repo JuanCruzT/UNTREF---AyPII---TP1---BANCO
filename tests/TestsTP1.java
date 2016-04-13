@@ -351,7 +351,7 @@ public class TestsTP1{
 					domicilio, 45011234, "DNI",	37340483, "Casado", "Ingeniero", "Delfina Nevado");
 	
 		Cuenta lucasCA = operatoria.aperturaCA(lucas,1000,"pesos", 0);
-		Cuenta lucasCC = operatoria.aperturaCC(lucas,0,"pesos", 0);
+		Cuenta lucasCC = operatoria.aperturaCC(lucas,100,1);
 	
 		boolean transferenciaExitosa = operatoria.extraer(lucasCA,lucasCC,1000);
 		
@@ -365,7 +365,7 @@ public class TestsTP1{
 					domicilio, 45011234, "DNI", 37340483, "Casado", "Ingeniero", "Delfina Nevado");
 	
 		Cuenta lucasCA = operatoria.aperturaCA(lucas,1000,"pesos", 0);
-		Cuenta lucasCC = operatoria.aperturaCC(lucas,0,"pesos", 0);
+		Cuenta lucasCC = operatoria.aperturaCC(lucas,100,1);
 	
 		boolean transferenciaExitosa = operatoria.extraer(lucasCA,lucasCC,-1000);
 		

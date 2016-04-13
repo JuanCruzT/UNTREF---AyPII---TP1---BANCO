@@ -12,7 +12,7 @@ import clases.clientes.PersonaFisica;
 import clases.clientes.PersonaJuridica;
 import clases.cuentas.Cuenta;
 
-public class OperatoriaBancaria implements GestionDeClientes,
+public class OperatoriaBancaria implements GestionDeClientes, GestionDeCuentas,
 		OperacionesPorVentanilla {
 
 	private Set<Cliente> listadoDeClientes = new HashSet<Cliente>();
@@ -42,6 +42,26 @@ public class OperatoriaBancaria implements GestionDeClientes,
 
 	public void activarCliente(Cliente cliente) {
 
+	}
+	
+	public boolean aperturaCA(PersonaFisica [] personaFisica, Double saldo, String nominacion, Double costoMantenimiento){
+		
+	}
+
+	public boolean aperturaCC(Cliente [] cliente, Double sobregiro, Double saldo){
+		
+	}
+	
+	public void inhabilitarCuenta(Cuenta cuenta){
+		
+	}
+	
+	public void habilitarCuenta(Cuenta cuenta){
+		
+	}
+	
+	public void aperturaCE(){
+		
 	}
 
 	public boolean depositar(Cuenta cuenta, Double monto) {
