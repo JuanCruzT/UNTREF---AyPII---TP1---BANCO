@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import clases.cuentas.Cuenta;
+import excepciones.CuentaInvalida;
 
 public abstract class Cliente {
 
@@ -70,7 +71,7 @@ public abstract class Cliente {
 		return cuentasAsociadas;
 	}
 
-	public abstract boolean agregarCuenta(Cuenta cuenta);
+	public abstract boolean agregarCuenta(Cuenta cuenta) throws CuentaInvalida;
 	
 	public String toString(){
 		

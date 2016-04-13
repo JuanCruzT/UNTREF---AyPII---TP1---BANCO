@@ -1,6 +1,7 @@
 package clases.clientes;
 
-import clases.cuentas.Cuenta;
+import clases.cuentas.*;
+import excepciones.CuentaInvalida;
 
 
 public class PersonaFisica extends Cliente {
@@ -9,7 +10,7 @@ public class PersonaFisica extends Cliente {
 	private Long numeroDeDocumento;
 	private EstadoCivil estadoCivil;
 	private String profesion;
-	private String conyuge;
+	private String conyuge = "";
 
 	public PersonaFisica(String nombre, Long cuit, Domicilio domicilio,
 			Long telefono, Documento tipoDeDocumento,
@@ -67,8 +68,37 @@ public class PersonaFisica extends Cliente {
 	}
 
 	@Override
-	public boolean agregarCuenta(Cuenta cuenta) {
-		// TODO Apéndice de método generado automáticamente
-		return false;
+	public boolean agregarCuenta(Cuenta cuenta) throws CuentaInvalida {
+		
+		if (cuenta == null) {
+			throw new CuentaInvalida("La cuenta no es valida");
+
+		}
+
+		if (!getCuentasAsociadas().add(cuenta)) {
+
+			throw new CuentaInvalida("La cuenta ya está asociada al cliente");
+		}
+
+		/*
+		 * else { getCuentasAsociadas().add(cuentaCorriente); }
+		 */
+
+		return true;
+	}
+	
+	public String toString(){
+		
+		return  "Activo: " + isActivo()
+				+ "\nNombre: " + getNombre()
+				+ "\nCuit: " + getCuit()
+				+ "\nDomicilio: " + getDomicilio()
+				+ "\nTelefono: " + getTelefono()
+				+ "\nDocumento: " + tipoDeDocumento + " " + numeroDeDocumento
+				+ "\nEstado civil: " + estadoCivil
+				+ "\nProfesion: " + profesion
+				+ "\nConyuge: " + conyuge;
+				
+			
 	}
 }
