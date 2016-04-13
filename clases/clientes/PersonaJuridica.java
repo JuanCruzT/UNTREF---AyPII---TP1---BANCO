@@ -40,5 +40,17 @@ public class PersonaJuridica extends Cliente {
 
 		return true;
 	}
+	
+	public String toString(){
+		
+		return  "Activo: " + isActivo()
+				+ "\nNombre: " + getNombre()
+				+ "\nCuit: " + getCuit()
+				+ "\nDomicilio: " + getDomicilio()
+				+ "\nTelefono: " + getTelefono()
+				+ "\nFecha del contrato social: " + fecha;
+				
+			
+	}
 
 }

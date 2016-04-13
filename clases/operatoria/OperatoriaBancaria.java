@@ -1,30 +1,38 @@
 package clases.operatoria;
 
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import clases.clientes.Cliente;
+import clases.clientes.Documento;
 import clases.clientes.Domicilio;
+import clases.clientes.EstadoCivil;
 import clases.clientes.PersonaFisica;
+import clases.clientes.PersonaJuridica;
 import clases.cuentas.Cuenta;
 
 public class OperatoriaBancaria implements GestionDeClientes,
 		OperacionesPorVentanilla {
 
-	private Cliente[] listadoDeClientes;
-	private Cuenta[] listadoDeCuentas;
-	private Double deDolaresAPesos;
-	private Double dePesosADolares;
+	private Set<Cliente> listadoDeClientes = new HashSet<Cliente>();
+	private Set<Cuenta> listadoDeCuentas = new HashSet<Cuenta>();
+	private Double cotizacionDolar;
 
-	public void altaPersonaFisica(String nombre, Integer cuit,
-			String domicilio, Integer telefono, String tipoDeDocumento,
-			Integer numeroDeDocumento, String estadoCivil, String profesion,
+	public Cliente altaPersonaFisica(String nombre, Long cuit, Domicilio domicilio,
+			Long telefono, Documento tipoDeDocumento,
+			Long numeroDeDocumento, EstadoCivil estadoCivil, String profesion,
 			String conyuge) {
 
-		new PersonaFisica(nombre, cuit, domicilio, telefono, tipoDeDocumento,
+		return new PersonaFisica(nombre, cuit, domicilio, telefono, tipoDeDocumento,
 				numeroDeDocumento, estadoCivil, profesion, conyuge);
 
 	}
 
-	public void altaPersonaJuridica(String nombre, Integer cuit,
-			Domicilio domicilio, Integer telefono, Integer fecha) {
+	public Cliente altaPersonaJuridica(String nombre, Long cuit, Domicilio domicilio,
+			Long telefono, Date fecha) {
+		
+		return new PersonaJuridica(nombre, cuit, domicilio, telefono, fecha);
 
 	}
 
@@ -60,36 +68,21 @@ public class OperatoriaBancaria implements GestionDeClientes,
 
 	}
 
-	public Cliente[] getListadoDeClientes() {
+	public Set<Cliente> getListadoDeClientes() {
 		return listadoDeClientes;
 	}
 
-	public void setListadoDeClientes(Cliente[] listadoDeClientes) {
-		this.listadoDeClientes = listadoDeClientes;
-	}
-
-	public Cuenta[] getListadoDeCuentas() {
+	public Set<Cuenta> getListadoDeCuentas() {
 		return listadoDeCuentas;
 	}
 
-	public void setListadoDeCuentas(Cuenta[] listadoDeCuentas) {
-		this.listadoDeCuentas = listadoDeCuentas;
+	public Double getCotizacionDolar() {
+		return cotizacionDolar;
 	}
 
-	public Double getDeDolaresAPesos() {
-		return deDolaresAPesos;
+	public void setCotizacionDolar(Double cotizacionDolar) {
+		this.cotizacionDolar = cotizacionDolar;
 	}
 
-	public void setDeDolaresAPesos(Double deDolaresAPesos) {
-		this.deDolaresAPesos = deDolaresAPesos;
-	}
-
-	public Double getDePesosADolares() {
-		return dePesosADolares;
-	}
-
-	public void setDePesosADolares(Double dePesosADolares) {
-		this.dePesosADolares = dePesosADolares;
-	}
 
 }
