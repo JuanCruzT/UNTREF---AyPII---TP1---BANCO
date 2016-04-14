@@ -19,49 +19,54 @@ public class OperatoriaBancaria implements GestionDeClientes, GestionDeCuentas,
 	private Set<Cuenta> listadoDeCuentas = new HashSet<Cuenta>();
 	private Double cotizacionDolar;
 
-	public Cliente altaPersonaFisica(String nombre, Long cuit, Domicilio domicilio,
-			Long telefono, Documento tipoDeDocumento,
+	public Cliente altaPersonaFisica(String nombre, Long cuit,
+			Domicilio domicilio, Long telefono, Documento tipoDeDocumento,
 			Long numeroDeDocumento, EstadoCivil estadoCivil, String profesion,
 			String conyuge) {
 
-		return new PersonaFisica(nombre, cuit, domicilio, telefono, tipoDeDocumento,
-				numeroDeDocumento, estadoCivil, profesion, conyuge);
+		return new PersonaFisica(nombre, cuit, domicilio, telefono,
+				tipoDeDocumento, numeroDeDocumento, estadoCivil, profesion,
+				conyuge);
 
 	}
 
-	public Cliente altaPersonaJuridica(String nombre, Long cuit, Domicilio domicilio,
-			Long telefono, Date fecha) {
-		
+	public Cliente altaPersonaJuridica(String nombre, Long cuit,
+			Domicilio domicilio, Long telefono, Date fecha) {
+
 		return new PersonaJuridica(nombre, cuit, domicilio, telefono, fecha);
 
 	}
 
 	public void bajaCliente(Cliente cliente) {
-
+		
+		cliente.setActivo(false);
 	}
 
 	public void activarCliente(Cliente cliente) {
 
-	}
-	
-	public boolean aperturaCA(PersonaFisica [] personaFisica, Double saldo, String nominacion, Double costoMantenimiento){
-		
+		cliente.setActivo(true);
 	}
 
-	public boolean aperturaCC(Cliente [] cliente, Double sobregiro, Double saldo){
-		
+	public boolean aperturaCA(Set<PersonaFisica> personaFisica, Double saldo,
+			Moneda nominacion, Double costoMantenimiento) {
+
 	}
-	
-	public void inhabilitarCuenta(Cuenta cuenta){
-		
+
+	public boolean aperturaCC(Set<Cliente> cliente, Double sobregiro,
+			Double saldo) {
+
 	}
-	
-	public void habilitarCuenta(Cuenta cuenta){
-		
+
+	public void inhabilitarCuenta(Cuenta cuenta) {
+
 	}
-	
-	public void aperturaCE(){
-		
+
+	public void habilitarCuenta(Cuenta cuenta) {
+
+	}
+
+	public void aperturaCE() {
+
 	}
 
 	public boolean depositar(Cuenta cuenta, Double monto) {
@@ -103,6 +108,5 @@ public class OperatoriaBancaria implements GestionDeClientes, GestionDeCuentas,
 	public void setCotizacionDolar(Double cotizacionDolar) {
 		this.cotizacionDolar = cotizacionDolar;
 	}
-
 
 }

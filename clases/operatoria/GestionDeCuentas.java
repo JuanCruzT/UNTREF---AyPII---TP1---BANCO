@@ -1,13 +1,15 @@
 package clases.operatoria;
 
+import java.util.Set;
+
 import clases.clientes.*;
 import clases.cuentas.Cuenta;
 
 public interface GestionDeCuentas {
 
-	public boolean aperturaCA(PersonaFisica [] personaFisica, Double saldo, String nominacion, Double costoMantenimiento);
+	public boolean aperturaCA(Set<PersonaFisica> personaFisica, Double saldo, Moneda nominacion, Double costoMantenimiento);
 
-	public boolean aperturaCC(Cliente [] cliente, Double sobregiro, Double saldo);
+	public boolean aperturaCC(Set<Cliente> cliente, Double sobregiro, Double saldo);
 	
 	public void inhabilitarCuenta(Cuenta cuenta);
 	
