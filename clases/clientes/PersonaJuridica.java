@@ -10,10 +10,10 @@ public class PersonaJuridica extends Cliente {
 	private Date fecha;
 
 	public PersonaJuridica(String nombre, Long cuit, Domicilio domicilio,
-			Long telefono, Date fecha) {
+			Long telefono, Date fecha) throws CuentaInvalida {
 
 		super(nombre, cuit, domicilio, telefono);
-		this.fecha = fecha;
+		setFecha(fecha);
 
 	}
 
@@ -21,6 +21,10 @@ public class PersonaJuridica extends Cliente {
 		return fecha;
 	}
 
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	
 	@Override
 	public boolean agregarCuenta(Cuenta cuentaCorriente) throws CuentaInvalida {
 

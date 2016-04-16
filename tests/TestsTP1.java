@@ -1,5 +1,10 @@
 package tests;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import clases.*;
 
 import org.junit.*;
@@ -7,17 +12,22 @@ import org.junit.*;
 import clases.clientes.*;
 import clases.cuentas.*;
 import clases.operatoria.*;
+import excepciones.DomicilioInvalido;
 
 public class TestsTP1 {
 
 	Domicilio domicilio;
 	OperatoriaBancaria operatoria;
+	Date fecha;
+	DateFormat formateador;
 
 	@Before
-	public void CrearOperatoria() {
+	public void CrearOperatoria() throws DomicilioInvalido, ParseException {
 		operatoria = new OperatoriaBancaria();
 		domicilio = new Domicilio("Navarro", 117, 1608, "Devoto",
 				"Buenos Aires");
+		formateador = new SimpleDateFormat("ddMMyyyy");
+		fecha = formateador.parse("16042014");
 	}
 
 	/*
@@ -25,23 +35,21 @@ public class TestsTP1 {
 	 */
 
 	@Test
-	public void CrearDomicilioValido() {
+	public void CrearDomicilioValido() throws DomicilioInvalido {
 		Domicilio domicilio = new Domicilio("Navarro", 117, 1608, "Devoto",
 				"Buenos Aires");
 
 		Assert.assertEquals("Navarro", domicilio.getCalle());
 	}
 
-	@Test(expected = Error.class)
-	public void CrearDomicilioSinCalle() {
-		Domicilio domicilioInvalido = new Domicilio("", 117, 1608, "Devoto",
-				"Buenos Aires");
+	@Test(expected = Exception.class)
+	public void CrearDomicilioSinCalle() throws DomicilioInvalido {
+		new Domicilio("", 117, 1608, "Devoto", "Buenos Aires");
 	}
 
-	@Test(expected = Error.class)
-	public void CrearDomicilioInvalido() {
-		Domicilio domicilioInvalido = new Domicilio("Navarro", -117, 1608,
-				"Devoto", "Buenos Aires");
+	@Test(expected = Exception.class)
+	public void CrearDomicilioInvalido() throws DomicilioInvalido {
+		new Domicilio("Navarro", -117, 1608, "Devoto", "Buenos Aires");
 	}
 
 	/*
@@ -61,7 +69,7 @@ public class TestsTP1 {
 
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void CrearPersonaFisicaInvalidaNombre() {
 
 		operatoria.altaPersonaFisica(" ", 1234567890123L, domicilio, 45011234L,
@@ -70,78 +78,53 @@ public class TestsTP1 {
 
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void CrearPersonaFisicaInvalidaDomicilio() {
 
-		Cliente personaFisicaInvalida = operatoria.altaPersonaFisica(
-				"Lucas Martinez", 1234567890123, "", "DNI", 37340483, "Casado",
-				"Ingeniero", 45011234, "Delfina Nevado");
+		operatoria.altaPersonaFisica("Lucas Martinez", 1234567890123L, null,
+				45011234L, Documento.DNI, 37340483L, EstadoCivil.CASADO,
+				"Ingeniero", "Delfina Nevado");
 
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void CrearPersonaFisicaInvalidaCUIT() {
 
-		operatoria.altaPersonaFisica(
-				"Lucas Martinez", -1234567890123L, domicilio, 45011234L,
-				Documento.DNI, 37340483L, EstadoCivil.CASADO, "Ingeniero",
-				"Delfina Nevado");
-
+		operatoria.altaPersonaFisica("Lucas Martinez", -1234567890123L,
+				domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void CrearPersonaFisicaInvalidaTipoDocumento() {
 
-		Cliente personaFisicaInvalida = operatoria
-				.altaPeraltaPersonaFisicasonaFisica("Lucas Martinez",
-						1234567890123, domicilio, 45011234, "", 37340483,
-						"Casado", "Ingeniero", "Delfina Nevado");
+		operatoria.altaPersonaFisica("Lucas Martinez",
+				1234567890123L, domicilio, 45011234L, null, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void CrearPersonaFisicaInvalidaDNI() {
+
+		operatoria.altaPersonaFisica("Lucas Martinez", 1234567890123L,
+				domicilio, 45011234L, Documento.DNI, -37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
+
+	}
+
+	@Test(expected = Exception.class)
+	public void CrearPersonaFisicaInvalidaCUITRepetido() {
 
 		operatoria.altaPersonaFisica(
 				"Lucas Martinez", 1234567890123L, domicilio, 45011234L,
-				Documento.DNI, -37340483L, EstadoCivil.CASADO, "Ingeniero",
+				Documento.DNI, 37340483L, EstadoCivil.CASADO, "Ingeniero",
 				"Delfina Nevado");
 
-	}
-
-	@Test
-	public void CrearPersonaFisicaInvalidaCUITRepetido() {
-
-		Cliente personaFisicaInvalida1 = operatoria.altaPersonaFisica(
-				"Lucas Martinez", 1234567890123, domicilio, 45011234, "DNI",
-				37340483, "Casado", "Ingeniero", "Delfina Nevado");
-
-		Cliente personaFisicaInvalida2 = operatoria.altaPersonaFisica(
-				"Delfina Nevado", 1234567890123, domicilio, 45011234, "DNI",
-				37171103, "Casado", "Ingeniero", "Lucas Martinez");
-
-		Assert.assertFalse(personaFisicaInvalida1.getCuit() == personaFisicaInvalida2
-				.getCuit());
-	}
-
-	@Test
-	public void CrearPersonaFisicaYaCreada() {
-
-		Cliente clienteInvalido1 = operatoria.altaPersonaFisica(
-				"Lucas Martinez", 1234567890123, domicilio, 45011234, "DNI",
-				37340483, "Casado", "Ingeniero", "Delfina Nevado");
-
-		Cliente clienteInvalido2 = operatoria.altaPersonaFisica(
-				"Lucas Martinez", 1234567890123, domicilio, 45011234, "DNI",
-				37171103, "Casado", "Ingeniero", "Lucas Martinez");
-
-		/*
-		 * comprobamos que no se instancien dos objetos iguales
-		 * (clienteInvalido2.getNumeroDeDocumento() deberia devolver null)
-		 */
-		Assert.assertFlase(clienteInvalido1.getNumeroDeDocumento(),
-				clienteInvalido2.getNumeroDeDocumento);
-		Assert.assertNull(clienteInvalido2);
+		operatoria.altaPersonaFisica(
+				"Delfina Nevado", 1234567890123L, domicilio, 45011234L,
+				Documento.DNI, 37171103L, EstadoCivil.CASADO, "Ingeniero",
+				"Lucas Martinez");
 	}
 
 	/*
@@ -152,7 +135,8 @@ public class TestsTP1 {
 	public void CrearPersonaJuridicaValida() {
 
 		Cliente personaJuridicaValido = operatoria.altaPersonaJuridica(
-				"Lucas Martinez", 1234567890123, domicilio, 45011234, 16042014);
+				"Lucas Martinez", 1234567890123L, domicilio, 45011234L,
+				fecha);
 
 		Assert.assertNotNull(personaJuridicaValido);
 
@@ -161,9 +145,9 @@ public class TestsTP1 {
 	@Test
 	public void CrearPersonaJuridicaInvalidaCUIT() {
 
-		Cliente personaJuridicaInvalido = operatoria
-				.altaPersonaJuridica("Lucas Martinez", -1234567890123,
-						domicilio, 45011234, 16042014);
+		Cliente personaJuridicaInvalido = operatoria.altaPersonaJuridica(
+				"Lucas Martinez", -1234567890123L, domicilio, 45011234L,
+				fecha);
 
 		/* chequeamos que el objeto sea null */
 		Assert.assertNull(personaJuridicaInvalido);
@@ -173,19 +157,8 @@ public class TestsTP1 {
 	public void CrearPersonaJuridicaInvalidaNombre() {
 
 		Cliente personaJuridicaInvalido = operatoria.altaPersonaJuridica("",
-				1234567890123, domicilio, 45011234, 16042014);
+				1234567890123L, domicilio, 45011234L, fecha);
 
-	}
-
-	@Test
-	public void CrearPersonaJuridicaInvalidaFecha() {
-
-		Cliente personaJuridicaInvalido = operatoria
-				.altaPersonaJuridica("Lucas Martinez", 1234567890123,
-						domicilio, 45011234, 999999999);
-
-		/* chequeamos que el objeto sea null */
-		Assert.assertNull(personaJuridicaInvalido);
 	}
 
 	/*
@@ -195,11 +168,11 @@ public class TestsTP1 {
 	public void darDeBajaCliente() {
 
 		Cliente delfina = operatoria.altaPersonaFisica("Delfina Nevado",
-				1234567890123, domicilio, 45011234, "DNI", 37171103, "Casado",
-				"Ingeniero", "Lucas Martinez");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37171103L,
+				EstadoCivil.CASADO, "Ingeniero", "Lucas Martinez");
 
 		operatoria.bajaCliente(delfina);
-		clienteActivo = delfina.getActivo();
+		boolean clienteActivo = delfina.isActivo();
 		Assert.assertFalse(clienteActivo);
 	}
 
@@ -207,15 +180,14 @@ public class TestsTP1 {
 	public void activarCliente() {
 
 		Cliente delfina = operatoria.altaPersonaFisica("Delfina Nevado",
-				1234567890123, domicilio, 45011234, "DNI", 37171103, "Casado",
-				"Ingeniero", "Lucas Martinez");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37171103L,
+				EstadoCivil.CASADO, "Ingeniero", "Lucas Martinez");
 
 		operatoria.bajaCliente(delfina);
 		operatoria.activarCliente(delfina);
-		clienteActivo = delfina.getActivo();
+		boolean clienteActivo = delfina.isActivo();
 		Assert.assertTrue(clienteActivo);
 	}
-
 	/*
 	 * Gestion de cuentas
 	 */
@@ -224,30 +196,30 @@ public class TestsTP1 {
 	public void aperturaCajaDeAhorroValida() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 100, "pesos", 0);
 
 		Assert.assertEquals(lucas, lucasCA.getCliente());
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void aperturaCajaDeAhorroInvalidaMonto() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, -700, "pesos", 0);
 
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void aperturaCajaDeAhorroInvalidaPersonaJuridica() {
 
 		Cliente lucas = operatoria.altaPersonaJuridica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, 16042014);
+				1234567890123L, domicilio, 45011234L, 16042014);
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 700, "pesos", 0);
 
@@ -257,8 +229,8 @@ public class TestsTP1 {
 	public void aperturaCuentaCorrienteValida() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCC = operatoria.aperturaCC(lucas, 100, 1);
 
@@ -269,14 +241,14 @@ public class TestsTP1 {
 	public void inhabilitarCuentaValida() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 700, "pesos", 0);
 
 		operatoria.inhabilitarCuenta(lucasCA);
 
-		boolean estaInhabilitada = lucasCA.getActivo();
+		boolean estaInhabilitada = lucasCA.isActivo();
 
 		Assert.assertFasle(estaInhabilitada);
 	}
@@ -285,15 +257,15 @@ public class TestsTP1 {
 	public void habilitarCuentaInhabilitada() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 700, "pesos", 0);
 
 		operatoria.inhabilitarCuenta(lucasCA);
 		operatoria.habilitarCuenta(lucasCA);
 
-		boolean estaHabilitada = lucas.getActivo();
+		boolean estaHabilitada = lucas.isActivo();
 
 		Assert.assertTrue(estaHabilitada);
 	}
@@ -306,8 +278,8 @@ public class TestsTP1 {
 	public void depositarValida() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 700, "pesos", 0);
 
@@ -316,12 +288,12 @@ public class TestsTP1 {
 		Assert.assertTrue(seDeposito);
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = Exception.class)
 	public void depositarInvalidaMontoNegativo() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 700, "pesos", 0);
 
@@ -333,8 +305,8 @@ public class TestsTP1 {
 	public void extraccionValida() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 
@@ -348,8 +320,8 @@ public class TestsTP1 {
 	public void extraccionMontoInvalido() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 
@@ -363,8 +335,8 @@ public class TestsTP1 {
 	public void despositarMontoInvalido() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 
@@ -378,8 +350,8 @@ public class TestsTP1 {
 	public void tranferenciaValida() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 		Cuenta lucasCC = operatoria.aperturaCC(lucas, 100, 1);
@@ -394,8 +366,8 @@ public class TestsTP1 {
 	public void tranferenciaMontoInvalido() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 		Cuenta lucasCC = operatoria.aperturaCC(lucas, 100, 1);
@@ -410,8 +382,8 @@ public class TestsTP1 {
 	public void tranferenciaCuentaInvalido() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 
@@ -424,8 +396,8 @@ public class TestsTP1 {
 	public void listarMovimientosVacios() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 
@@ -438,8 +410,8 @@ public class TestsTP1 {
 	public void listarMovimientosCuentaNula() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Transacciones[] t = getListarMovimientos(null);
 
@@ -450,8 +422,8 @@ public class TestsTP1 {
 	public void listarMovimientosCuenta() {
 
 		Cliente lucas = operatoria.altaPersonaFisica("Lucas Martinez",
-				1234567890123, domicilio, 45011234, "DNI", 37340483, "Casado",
-				"Ingeniero", "Delfina Nevado");
+				1234567890123L, domicilio, 45011234L, Documento.DNI, 37340483L,
+				EstadoCivil.CASADO, "Ingeniero", "Delfina Nevado");
 
 		Cuenta lucasCA = operatoria.aperturaCA(lucas, 1000, "pesos", 0);
 		operatoria.depositar(lucas, 100);
@@ -462,5 +434,4 @@ public class TestsTP1 {
 
 		Assert.assertEquals(3, t.length(), 0.01);
 	}
-
 }

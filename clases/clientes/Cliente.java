@@ -16,7 +16,7 @@ public abstract class Cliente {
 	private Set<Cuenta> cuentasAsociadas = new HashSet<Cuenta>();
 
 	public Cliente(String nombre, Long cuit, Domicilio domicilio,
-			Long telefono) {
+			Long telefono) throws CuentaInvalida {
 
 		this.setNombre(nombre);
 		this.setCuit(cuit);
@@ -39,7 +39,11 @@ public abstract class Cliente {
 		return cuit;
 	}
 
-	public void setCuit(Long cuit) {
+	public void setCuit(Long cuit) throws CuentaInvalida{
+		if(cuit <= 0){
+			throw new CuentaInvalida("El CUIT debe ser mayor a cero");
+		}
+		
 		this.cuit = cuit;
 	}
 
@@ -55,7 +59,10 @@ public abstract class Cliente {
 		return telefono;
 	}
 
-	public void setTelefono(Long telefono) {
+	public void setTelefono(Long telefono) throws CuentaInvalida {
+		if(telefono <= 0){
+			throw new CuentaInvalida("El telefono debe ser mayor a cero");
+		}
 		this.telefono = telefono;
 	}
 

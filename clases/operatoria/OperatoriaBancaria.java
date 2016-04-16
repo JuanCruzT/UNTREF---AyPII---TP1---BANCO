@@ -4,13 +4,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import clases.clientes.Cliente;
-import clases.clientes.Documento;
-import clases.clientes.Domicilio;
-import clases.clientes.EstadoCivil;
-import clases.clientes.PersonaFisica;
-import clases.clientes.PersonaJuridica;
-import clases.cuentas.Cuenta;
+import clases.clientes.*;
+import clases.cuentas.*;
+import excepciones.*;
 
 public class OperatoriaBancaria implements GestionDeClientes, GestionDeCuentas,
 		OperacionesPorVentanilla {
@@ -24,21 +20,35 @@ public class OperatoriaBancaria implements GestionDeClientes, GestionDeCuentas,
 			Long numeroDeDocumento, EstadoCivil estadoCivil, String profesion,
 			String conyuge) {
 
-		return new PersonaFisica(nombre, cuit, domicilio, telefono,
-				tipoDeDocumento, numeroDeDocumento, estadoCivil, profesion,
-				conyuge);
+		Cliente cliente = null;
+		try {
+			  cliente = new PersonaFisica(nombre, cuit, domicilio, telefono,
+					tipoDeDocumento, numeroDeDocumento, estadoCivil, profesion,
+					conyuge);
+			listadoDeClientes.add(cliente);
 
+		} catch (CuentaInvalida c) {
+			System.out.println("No se puede crear la cuenta");
+		}
+		return cliente;
 	}
 
 	public Cliente altaPersonaJuridica(String nombre, Long cuit,
 			Domicilio domicilio, Long telefono, Date fecha) {
 
-		return new PersonaJuridica(nombre, cuit, domicilio, telefono, fecha);
-
+		Cliente cliente = null;
+		try {
+			cliente = new PersonaJuridica(nombre, cuit, domicilio, telefono, fecha);
+			listadoDeClientes.add(cliente);
+		} catch (CuentaInvalida c) {
+			System.out.println("No se puede crear la cuenta");
+		}
+		return cliente;
 	}
 
+
 	public void bajaCliente(Cliente cliente) {
-		
+
 		cliente.setActivo(false);
 	}
 

@@ -15,7 +15,7 @@ public class PersonaFisica extends Cliente {
 	public PersonaFisica(String nombre, Long cuit, Domicilio domicilio,
 			Long telefono, Documento tipoDeDocumento,
 			Long numeroDeDocumento, EstadoCivil estadoCivil, String profesion,
-			String conyuge) {
+			String conyuge) throws CuentaInvalida {
 
 		super(nombre, cuit, domicilio, telefono);
 
@@ -39,7 +39,10 @@ public class PersonaFisica extends Cliente {
 		return numeroDeDocumento;
 	}
 
-	public void setNumeroDeDocumento(Long numeroDeDocumento) {
+	public void setNumeroDeDocumento(Long numeroDeDocumento) throws CuentaInvalida {
+		if(numeroDeDocumento <= 0){
+			throw new CuentaInvalida("El numero de documento no puede ser negativo");
+		}
 		this.numeroDeDocumento = numeroDeDocumento;
 	}
 
