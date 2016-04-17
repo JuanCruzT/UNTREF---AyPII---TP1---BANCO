@@ -1,4 +1,8 @@
 package clases.cuentas;
+import java.util.HashSet;
+import java.util.Set;
+
+import excepciones.CuentaInvalida;
 
 public class CuentaCorriente extends Cuenta {
   
