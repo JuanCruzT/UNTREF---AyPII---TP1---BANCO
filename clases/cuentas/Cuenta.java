@@ -1,24 +1,34 @@
 package clases.cuentas;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import excepciones.CuentaInvalida;
+
 public class Cuenta {
 
-  private Integer cbu;
+  	private Integer cbu;
 	private Double saldo;
-	private Transacciones[] movimientos ;
 	private Boolean activa;
+	private Set<Transaccion> movimientos = new HashSet<Transaccion>();
+
 	
 	public Cuenta(Integer cbu, Double saldo) throws CuentaInvalida {
 
 		this.setCbu(cbu);
 		this.setSaldo(saldo);
 		this.setActivo(true);
-		this.movimientos = new Transacciones[];
-		
+	
 	}
 	
-	public abstract Boolean acreditar(Double monto){}
-	public abstract Boolean debitar(Double monto){}
+	public abstract Boolean acreditar(Double monto) throws CuentaInvalida;
+	public abstract Boolean debitar(Double monto) throws CuentaInvalida;
+	public abstract boolean agregarMovimiento(Transaccion transaccion) throws CuentaInvalida;
 	
+	public Set<Transacciones> getMovimientos() {
+		return movimientos;
+	}
+
 	public void setCbu(Integer cbu){
 	  if(cbu >= 0){
 	    this.cbu = cbu;
@@ -40,7 +50,7 @@ public class Cuenta {
 	}
 	
 	public void setActiva(Boolean estado){
-	  if(this.activa == estado){
+	  	if(this.activa == estado){
 			throw new CuentaInvalida("L cuenta ya se encuentra en el estado ingresado");
 		}else{
 		   this.activa = estado;
