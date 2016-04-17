@@ -1,0 +1,35 @@
+package clases.cuentas;
+import java.util.HashSet;
+import java.util.Set;
+
+import excepciones.CuentaInvalida;
+
+public class CuentaEspecial extends Cuenta {
+  
+  public CuentaCorriente(Integer cbu, Double saldo) throws CuentaInvalida {
+      super(cbu, saldo);
+  }
+  
+  @Override
+	public boolean acreditar(Double monto) throws CuentaInvalida {
+		  try{
+		    setSaldo(monto);
+		  }catch{
+		    throw new CuentaInvalida("El saldo no pudo ser actualizado");
+		  }
+	
+	  return true;
+	}
+	
+	@Override
+	public boolean debitar(Double monto) throws CuentaInvalida {
+		  try{
+		    setSaldo(getSaldo - monto);
+		  }catch{
+		    throw new CuentaInvalida("El saldo no pudo ser actualizado");
+		  }
+	
+	  return true;
+	}
+
+}
